@@ -15,12 +15,17 @@ exports.handler = async function(event) {
     return { statusCode: 400, body: JSON.stringify({ content: [{ text: "Lỗi: Request body không hợp lệ." }] }) };
   }
 
+  const messages = body.messages.map(m => ({
+    role: m.role === "assistant" ? "model" : "user",
+    parts: [{ text: m.content }]
+  }));
+
+  if (body.system && messages.length > 0 && messages[0].role === "user") {
+    messages[0].parts[0].text = body.system + "\n\n" + messages[0].parts[0].text;
+  }
+
   const geminiBody = {
-    ...(body.system && { systemInstruction: { parts: [{ text: body.system }] } }),
-    contents: body.messages.map(m => ({
-      role: m.role === "assistant" ? "model" : "user",
-      parts: [{ text: m.content }]
-    })),
+    contents: messages,
     generationConfig: { maxOutputTokens: body.max_tokens || 1000 }
   };
 
