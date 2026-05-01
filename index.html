@@ -931,9 +931,9 @@ function AiSection({ prices, priceSource, now }) {
     const summary = allStocks.filter(s=>s.giaHT).slice(0,15)
       .map(s=>`${s.ma}: ngưỡngTS=${s.ngungTS}, giáHT=${Math.round(s.giaHT)}, cáchNgưỡng=${s.pct}%, thayĐổi=${s.changePct}%`).join("; ");
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/ai", {
         method:"POST",
-        headers:{"Content-Type":"application/json","anthropic-dangerous-direct-browser-calls":"true"},
+        headers:{"Content-Type":"application/json"},
         body:JSON.stringify({
           model:"claude-sonnet-4-20250514", max_tokens:1000,
           system:`Bạn là chuyên gia phân tích tài chính Việt Nam. Dữ liệu realtime từ ${priceSource||"AzFin"}: ${summary}. Ngày: ${now.toLocaleDateString("vi-VN")}. Trả lời ngắn gọn, chuyên nghiệp, tiếng Việt.`,
