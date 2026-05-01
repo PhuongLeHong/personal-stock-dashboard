@@ -16,7 +16,7 @@ exports.handler = async function(event) {
   }
 
   const geminiBody = {
-    ...(body.system && { system_instruction: { parts: [{ text: body.system }] } }),
+    ...(body.system && { systemInstruction: { parts: [{ text: body.system }] } }),
     contents: body.messages.map(m => ({
       role: m.role === "assistant" ? "model" : "user",
       parts: [{ text: m.content }]
